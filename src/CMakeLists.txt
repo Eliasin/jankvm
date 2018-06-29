@@ -12,3 +12,4 @@ set_property(TARGET boost PROPERTY
 enable_testing()
 add_subdirectory(jankvm)
 add_subdirectory(utils)
+add_subdirectory(interface)

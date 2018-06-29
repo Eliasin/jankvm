@@ -5,11 +5,12 @@
 #include <limits>
 #include <cerrno>
 #include <cstring>
+#include <iostream>
 
 #include <boost/predef/other/endian.h>
 
 
-bool tryRead(std::istream& in, char* buffer, size_t n) {
+inline bool tryRead(std::istream& in, char* buffer, size_t n) {
 	if (!in.read(buffer, n)) {
 		std::cerr << "Error: " << strerror(errno) << std::endl;
 		return false;
