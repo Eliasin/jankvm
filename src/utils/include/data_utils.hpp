@@ -32,7 +32,7 @@ void reverseArray(T array[N]) {
 }
 
 
-template <typename T, size_t N, typename std::enable_if<std::is_trivial<T>::value>* = nullptr>
+template <typename T, size_t N, std::enable_if<std::is_trivial<T>::value>* = nullptr>
 T bytesToType(const char bytes[N]) {
 	static_assert(N > 0, "Attempted cast of zero bytes to type");
 	static_assert(sizeof(T) == N, "Attempted cast from bytes to type of incompatible size");
