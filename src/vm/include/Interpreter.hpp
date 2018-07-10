@@ -5,7 +5,7 @@
 
 class Interpreter {
 	Interpreter();
-	static Interpreter instance;
+	static const Interpreter instance;
 public:
 	static const Interpreter& getInstance();
 	int run(const JavaClass& jclass) const;

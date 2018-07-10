@@ -6,7 +6,7 @@
 #include <argparse.hpp>
 #include <ClassFileVerifier.hpp>
 #include <Interpreter.hpp>
-
+#include <ClassFileParser.hpp>
 
 int main(int argc, const char** argv) {
 	ArgumentParser parser;
@@ -16,7 +16,13 @@ int main(int argc, const char** argv) {
 	std::string classFilePath = parser.retrieve<std::string>("classFilePath");
 	std::ifstream file(classFilePath.c_str(), std::ifstream::binary);
 
-	std::cout << ClassFileVerifier::isValid(file) << std::endl;
+	ClassFileParser entrypointParser(file);
+	std::optional<JavaClass> entrypoint = entrypointParser.getClass();
+
+	const Interpreter& interpreter = Interpreter::getInstance();
+	if (entrypoint) {
+		interpreter.run(entrypoint.value());
+	}
 
 	return 0;
 }
