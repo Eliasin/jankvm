@@ -12,10 +12,8 @@ using ConstantPool = std::vector<ConstantPoolEntry>;
 
 class JavaClass {
 	ConstantPool constantPool;
-
-	friend JavaClassBuilder;
-	JavaClass(ConstantPool constantPool);
 public:
+	JavaClass(ConstantPool constantPool);
 	const ConstantPool& getConstantPool() const;
 
 };
