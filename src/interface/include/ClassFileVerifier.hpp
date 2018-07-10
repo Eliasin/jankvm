@@ -2,7 +2,6 @@
 #define JANKVM_VERIFIER
 
 #include <fstream>
-#include <data_utils.hpp>
 
 class ClassFileVerifier {
 public:

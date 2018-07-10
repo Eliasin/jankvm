@@ -1,5 +1,6 @@
 #include "ClassFileVerifier.hpp"
 
+#include <data_utils.hpp>
 
 bool ClassFileVerifier::checkForMagicValue(std::ifstream& file) {
 	constexpr int magic = 0xCAFEBABE;

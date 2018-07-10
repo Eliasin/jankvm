@@ -5,6 +5,7 @@
 
 #include <argparse.hpp>
 #include <ClassFileVerifier.hpp>
+#include <Interpreter.hpp>
 
 
 int main(int argc, const char** argv) {
