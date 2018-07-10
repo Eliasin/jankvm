@@ -2,7 +2,7 @@ project(vmlib VERSION 0.1 LANGUAGES CXX)
 
 add_library(vm
 	src/JavaClass.cpp
-	src/JavaClassBuilder.cpp
+	src/ClassFileParser.cpp
 	src/Interpreter.cpp)
 
 target_include_directories(vm PUBLIC
