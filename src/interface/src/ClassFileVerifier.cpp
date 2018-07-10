@@ -3,7 +3,7 @@
 #include <data_utils.hpp>
 
 bool ClassFileVerifier::checkForMagicValue(std::ifstream& file) {
-	constexpr int magic = 0xCAFEBABE;
+	constexpr uint32_t magic = 0xCAFEBABE;
 	char buffer[4];
 	if (!tryRead(file, buffer, 4)) {
 		return false;
