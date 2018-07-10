@@ -5,13 +5,17 @@
 #include <vector>
 #include <variant>
 
+class JavaClassBuilder;
+
 using ConstantPoolEntry = std::variant<int, std::string>;
 using ConstantPool = std::vector<ConstantPoolEntry>;
 
 class JavaClass {
 	ConstantPool constantPool;
+
+	friend JavaClassBuilder;
+	JavaClass(ConstantPool constantPool);
 public:
-	JavaClass(std::istream& in);
 	const ConstantPool& getConstantPool() const;
 
 };
