@@ -4,7 +4,6 @@
 #include <cinttypes>
 
 #include <argparse.hpp>
-#include <ClassFileVerifier.hpp>
 #include <Interpreter.hpp>
 #include <ClassFileParser.hpp>
 
