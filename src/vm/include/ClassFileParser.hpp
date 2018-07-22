@@ -14,6 +14,7 @@ class ClassFileParser {
 	bool checkMagicValue(std::istream& in);
 	bool checkClassVersion(std::istream& in);
 	ConstantPool parseConstantPool(std::istream& in);
+	ConstantPoolEntry parseConstantPoolEntry(std::istream& in);
 public:
 	ClassFileParser(std::istream& in);
 	std::optional<JavaClass> getClass() const;
