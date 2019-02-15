@@ -21,7 +21,7 @@ std::optional<JavaClass> ClassFileParser::getClass() const {
 	return {};
 }
 
-bool ClassFileParser::checkMagicValue(std::istream& in) {
+bool ClassFileParser::checkMagicValue(std::istream& in) const {
 	constexpr uint32_t magic = 0xCAFEBABE;
 	char buffer[4];
 	if (!tryRead(in, buffer, 4)) {
@@ -38,7 +38,7 @@ bool ClassFileParser::checkMagicValue(std::istream& in) {
 }
 
 
-bool ClassFileParser::checkClassVersion(std::istream& in) {
+bool ClassFileParser::checkClassVersion(std::istream& in) const {
 	constexpr unsigned int minimumSupportedMajorVersion = 52;
 	char minorVersion[2];
 	char majorVersion[2];
