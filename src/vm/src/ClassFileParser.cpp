@@ -95,19 +95,41 @@ ConstantPoolEntry ClassFileParser::parseConstantPoolEntry(std::istream& in) {
 
 	switch(tag) {
 		case CONSTANT_Class:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Fieldref:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Methodref:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_InterfaceMethodref:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_String:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Integer:
-			break;
+			{
+				char buf[4];
+				if (!tryRead(in, buf, 4)) {
+					valid = false;
+					return {};
+				}
+
+				uint32_t data = bytesToType<uint32_t, 4>(buf);
+				return ConstantPoolEntry(data);
+				break;
+			}
 		case CONSTANT_Float:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Long:
 			break;
 		case CONSTANT_Double:
