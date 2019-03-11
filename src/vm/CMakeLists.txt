@@ -14,3 +14,5 @@ target_compile_features(vm
 
 target_link_libraries(vm
 	PUBLIC utils)
+
+add_subdirectory(tests)
