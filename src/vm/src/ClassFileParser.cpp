@@ -14,8 +14,11 @@ ClassFileParser::ClassFileParser(std::istream& in) : javaClass({}) {
 	}
 
 	ConstantPoolParser constantPoolParser;
-	ConstantPool::Pool constantPool = constantPoolParser.parseConstantPool(in);
-	javaClass = JavaClass(constantPool);
+	std::optional<ConstantPool::Pool> constantPool = constantPoolParser.parseConstantPool(in);
+	if (!constantPool) {
+		valid = false;
+	}
+	javaClass = JavaClass(constantPool.value_or(ConstantPool::Pool{}));
 }
 
 std::optional<JavaClass> ClassFileParser::getClass() const {
