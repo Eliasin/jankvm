@@ -3,7 +3,8 @@ project(vmlib VERSION 0.1 LANGUAGES CXX)
 add_library(vm
 	src/JavaClass.cpp
 	src/ClassFileParser.cpp
-	src/Interpreter.cpp)
+	src/Interpreter.cpp
+	src/ConstantPoolParser.cpp)
 
 target_include_directories(vm PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
