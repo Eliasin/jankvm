@@ -11,7 +11,7 @@ ClassFileParser::ClassFileParser(std::istream& in) : javaClass({}) {
 		return;
 	}
 
-	ConstantPool constantPool = parseConstantPool(in);
+	ConstantPool::Pool constantPool = parseConstantPool(in);
 	javaClass = JavaClass(constantPool);
 }
 
@@ -37,7 +37,6 @@ bool ClassFileParser::checkMagicValue(std::istream& in) const {
 
 }
 
-
 bool ClassFileParser::checkClassVersion(std::istream& in) const {
 	constexpr unsigned int minimumSupportedMajorVersion = 52;
 	char minorVersion[2];
@@ -53,61 +52,58 @@ bool ClassFileParser::checkClassVersion(std::istream& in) const {
 	return false;
 }
 
-ConstantPool ClassFileParser::parseConstantPool(std::istream& in) {
-	ConstantPool constantPool;
+ConstantPool::Pool ClassFileParser::parseConstantPool(std::istream& in) {
+	using namespace ConstantPool;
+	Pool constantPool;
 	char numEntriesBuffer[2];
 
 	if (!tryRead(in, numEntriesBuffer, 2))
 		valid = false;
 	return {};
 
-	ConstantPool::size_type numEntries = bytesToType<uint16_t, 2>(numEntriesBuffer);
-	for (ConstantPool::size_type entryNumber = 0; entryNumber < numEntries; entryNumber++) {
+	ConstantPool::Pool::size_type numEntries = bytesToType<uint16_t, 2>(numEntriesBuffer);
+	for (ConstantPool::Pool::size_type entryNumber = 0; entryNumber < numEntries; entryNumber++) {
 		constantPool.push_back(parseConstantPoolEntry(in));
 	}
 
 	return constantPool;
 }
 
-ConstantPoolEntry ClassFileParser::parseConstantPoolEntry(std::istream& in) {
+ConstantPool::Entry ClassFileParser::parseConstantPoolEntry(std::istream& in) {
+	using namespace ConstantPool;
 	char tagBuffer[1];
 	if (!tryRead(in, tagBuffer, 1))
 		valid = false;
 	return {};
 	unsigned char tag = bytesToType<unsigned char, 1>(tagBuffer);
-
-	enum ConstantPoolTags {
-		CONSTANT_Class = 7,
-		CONSTANT_Fieldref = 9,
-		CONSTANT_Methodref = 10,
-		CONSTANT_InterfaceMethodref = 11,
-		CONSTANT_String = 8,
-		CONSTANT_Integer = 3,
-		CONSTANT_Float = 4,
-		CONSTANT_Long = 5,
-		CONSTANT_Double = 6,
-		CONSTANT_NameAndType = 12,
-		CONSTANT_Utf8 = 1,
-		CONSTANT_MethodHandle = 15,
-		CONSTANT_MethodType = 16,
-		CONSTANT_InvokeDynamic = 18
-	};
-
+	
 	switch(tag) {
 		case CONSTANT_Class:
 			{
+				char buf[2];
+				if (!tryRead(in, buf, 2)) {
+					valid = false;
+					return {};
+				}
+
+				Index index = bytesToType<Index, 2>(buf);
+				return {ClassInfo{index}};
 				break;
 			}
-		case CONSTANT_Fieldref:
-			{
-				break;
-			}
-		case CONSTANT_Methodref:
-			{
-				break;
-			}
+		case CONSTANT_Fieldref:	
+		case CONSTANT_Methodref:	
 		case CONSTANT_InterfaceMethodref:
 			{
+				char classIndexBuf[2];
+				char nameAndTypeIndexBuf[2];
+				if (!tryRead(in, classIndexBuf, 2) || !tryRead(in, nameAndTypeIndexBuf, 2)) {
+					valid = false;
+					return {};
+				}
+
+				Index classIndex = bytesToType<Index, 2>(classIndexBuf);
+				Index nameAndTypeIndex = bytesToType<Index, 2>(nameAndTypeIndexBuf);
+				return {Reference{static_cast<Tag>(tag), classIndex, nameAndTypeIndex}};
 				break;
 			}
 		case CONSTANT_String:
@@ -123,21 +119,52 @@ ConstantPoolEntry ClassFileParser::parseConstantPoolEntry(std::istream& in) {
 				}
 
 				uint32_t data = bytesToType<uint32_t, 4>(buf);
-				return ConstantPoolEntry(data);
+				return {data};
 				break;
 			}
 		case CONSTANT_Float:
 			{
+				char buf[4];
+				if (!tryRead(in, buf, 4)) {
+					valid = false;
+					return {};
+				}
+
+				float data = bytesToType<float, 4>(buf);
+				return {data};
 				break;
 			}
 		case CONSTANT_Long:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Double:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_NameAndType:
-			break;
+			{
+				break;
+			}
 		case CONSTANT_Utf8:
-			break;
+			{
+				char lenBuf[2];
+				if (!tryRead(in, lenBuf, 2)) {
+					valid = false;
+					return {};
+				}
+
+				uint16_t len = bytesToType<uint16_t, 2>(lenBuf);
+
+				char strBuf[len];
+				if (!tryRead(in, strBuf, len)) {
+					valid = false;
+					return {};
+				}
+
+				return {std::string{strBuf}};
+				break;
+			}
 		case CONSTANT_MethodHandle:
 			break;
 		case CONSTANT_MethodType:

@@ -1,7 +1,8 @@
 #include "JavaClass.hpp"
 
-JavaClass::JavaClass(ConstantPool constantPool) : constantPool(std::move(constantPool)) {}
+JavaClass::JavaClass(const ConstantPool::Pool& constantPool) : constantPool(constantPool) {}
+JavaClass::JavaClass(ConstantPool::Pool&& constantPool) : constantPool(std::move(constantPool)) {}
 
-const ConstantPool& JavaClass::getConstantPool() const {
+const ConstantPool::Pool& JavaClass::getConstantPool() const {
 	return constantPool;
 }
