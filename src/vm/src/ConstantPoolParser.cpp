@@ -94,10 +94,28 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 			}
 		case CONSTANT_Long:
 			{
+				char buf[8];
+
+				if (!tryRead(in, buf, 8)) {
+					valid = false;
+					return {};
+				}
+				
+				uint64_t data = bytesToType<uint64_t, 8>(buf);
+				return {data};
 				break;
 			}
 		case CONSTANT_Double:
 			{
+				char buf[8];
+
+				if (!tryRead(in, buf, 8)) {
+					valid = false;
+					return {};
+				}
+
+				double data = bytesToType<double, 8>(buf);
+			   	return {data};	
 				break;
 			}
 		case CONSTANT_NameAndType:

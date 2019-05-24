@@ -38,7 +38,7 @@ namespace ConstantPool {
 		Index stringIndex;
 	};
 
-	using Entry = std::variant<uint32_t, float, std::string, ClassInfo, ReferenceInfo, StringInfo>;
+	using Entry = std::variant<uint32_t, uint64_t, float, double, std::string, ClassInfo, ReferenceInfo, StringInfo>;
 
 	using Pool = std::vector<Entry>;
 }
