@@ -59,9 +59,11 @@ namespace ConstantPool {
 		Index nameAndTypeIndex;
 	};
 
+	using Padding = char;
+	
 	using Entry = std::variant<uint32_t, uint64_t, float, double, std::string, ClassInfo,
 		 					   ReferenceInfo, StringInfo, NameAndTypeInfo, MethodHandleInfo, 
-							   MethodTypeInfo, InvokeDynamicInfo>;
+							   MethodTypeInfo, InvokeDynamicInfo, Padding>;
 
 	using Pool = std::vector<Entry>;
 }

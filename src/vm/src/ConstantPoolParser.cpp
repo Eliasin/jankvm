@@ -15,7 +15,12 @@ std::optional<ConstantPool::Pool> ConstantPoolParser::parseConstantPool(std::ist
 
 	ConstantPool::Pool::size_type numEntries = bytesToType<uint16_t, numEntriesSize>(numEntriesBuffer);
 	for (ConstantPool::Pool::size_type entryNumber = 1; entryNumber < numEntries; entryNumber++) {
-		constantPool.push_back(parseEntry(in));
+		ConstantPool::Entry newEntry = parseEntry(in);
+		constantPool.push_back(newEntry);
+
+		if (std::holds_alternative<uint64_t>(newEntry) || std::holds_alternative<double>(newEntry)) {
+			constantPool.push_back(ConstantPool::Padding{});
+		}
 	}
 
 	return valid ? Pool{constantPool} : Pool{};
