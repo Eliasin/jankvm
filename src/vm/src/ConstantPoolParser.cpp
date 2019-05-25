@@ -90,7 +90,7 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 					return {};
 				}
 
-				uint32_t data = bytesToType<uint32_t, intSize>(buf);
+				int32_t data = bytesToType<int32_t, intSize>(buf);
 				return {data};
 				break;
 			}
@@ -117,7 +117,7 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 					return {};
 				}
 				
-				uint64_t data = bytesToType<uint64_t, longSize>(buf);
+				int64_t data = bytesToType<int64_t, longSize>(buf);
 				return {data};
 				break;
 			}
