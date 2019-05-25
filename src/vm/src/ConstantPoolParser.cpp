@@ -5,14 +5,16 @@
 std::optional<ConstantPool::Pool> ConstantPoolParser::parseConstantPool(std::istream& in) {
 	using namespace ConstantPool;
 	Pool constantPool;
-	char numEntriesBuffer[2];
+	constexpr numEntriesSize = 2;
+	char numEntriesBuffer[numEntriesSize];
 
-	if (!tryRead(in, numEntriesBuffer, 2))
+	if (!tryRead(in, numEntriesBuffer, numEntriesSize)) {
 		valid = false;
-	return {};
+		return {};
+	}
 
-	ConstantPool::Pool::size_type numEntries = bytesToType<uint16_t, 2>(numEntriesBuffer);
-	for (ConstantPool::Pool::size_type entryNumber = 0; entryNumber < numEntries; entryNumber++) {
+	ConstantPool::Pool::size_type numEntries = bytesToType<uint16_t, numEntriesSize>(numEntriesBuffer);
+	for (ConstantPool::Pool::size_type entryNumber = 1; entryNumber < numEntries; entryNumber++) {
 		constantPool.push_back(parseEntry(in));
 	}
 
