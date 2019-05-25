@@ -18,7 +18,7 @@ std::optional<ConstantPool::Pool> ConstantPoolParser::parseConstantPool(std::ist
 		ConstantPool::Entry newEntry = parseEntry(in);
 		constantPool.push_back(newEntry);
 
-		if (std::holds_alternative<uint64_t>(newEntry) || std::holds_alternative<double>(newEntry)) {
+		if (std::holds_alternative<int64_t>(newEntry) || std::holds_alternative<double>(newEntry)) {
 			constantPool.push_back(ConstantPool::Padding{});
 		}
 	}

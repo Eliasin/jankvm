@@ -61,7 +61,7 @@ namespace ConstantPool {
 
 	using Padding = char;
 	
-	using Entry = std::variant<uint32_t, uint64_t, float, double, std::string, ClassInfo,
+	using Entry = std::variant<int32_t, int64_t, float, double, std::string, ClassInfo,
 		 					   ReferenceInfo, StringInfo, NameAndTypeInfo, MethodHandleInfo, 
 							   MethodTypeInfo, InvokeDynamicInfo, Padding>;
 
