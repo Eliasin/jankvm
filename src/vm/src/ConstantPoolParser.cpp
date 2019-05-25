@@ -5,7 +5,7 @@
 std::optional<ConstantPool::Pool> ConstantPoolParser::parseConstantPool(std::istream& in) {
 	using namespace ConstantPool;
 	Pool constantPool;
-	constexpr numEntriesSize = 2;
+	constexpr uint8_t numEntriesSize = 2;
 	char numEntriesBuffer[numEntriesSize];
 
 	if (!tryRead(in, numEntriesBuffer, numEntriesSize)) {
@@ -25,9 +25,10 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 	using namespace ConstantPool;
 	constexpr uint8_t tagSize = 1;
 	char tagBuffer[tagSize];
-	if (!tryRead(in, tagBuffer, tagSize))
+	if (!tryRead(in, tagBuffer, tagSize)) {
 		valid = false;
-	return {};
+		return {};	
+	}
 	unsigned char tag = bytesToType<unsigned char, tagSize>(tagBuffer);
 
 	switch(tag) {
