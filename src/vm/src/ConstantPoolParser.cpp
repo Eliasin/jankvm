@@ -21,22 +21,24 @@ std::optional<ConstantPool::Pool> ConstantPoolParser::parseConstantPool(std::ist
 
 ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 	using namespace ConstantPool;
-	char tagBuffer[1];
-	if (!tryRead(in, tagBuffer, 1))
+	constexpr uint8_t tagSize = 1;
+	char tagBuffer[tagSize];
+	if (!tryRead(in, tagBuffer, tagSize))
 		valid = false;
 	return {};
-	unsigned char tag = bytesToType<unsigned char, 1>(tagBuffer);
+	unsigned char tag = bytesToType<unsigned char, tagSize>(tagBuffer);
 
 	switch(tag) {
 		case CONSTANT_Class:
 			{
-				char buf[2];
-				if (!tryRead(in, buf, 2)) {
+				constexpr uint8_t indexSize = 2;
+				char buf[indexSize];
+				if (!tryRead(in, buf, indexSize)) {
 					valid = false;
 					return {};
 				}
 
-				Index index = bytesToType<Index, 2>(buf);
+				Index index = bytesToType<Index, indexSize>(buf);
 				return {ClassInfo{index}};
 				break;
 			}
@@ -44,77 +46,83 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 		case CONSTANT_Methodref:
 		case CONSTANT_InterfaceMethodref:
 			{
-				char classIndexBuf[2];
-				char nameAndTypeIndexBuf[2];
-				if (!tryRead(in, classIndexBuf, 2) || !tryRead(in, nameAndTypeIndexBuf, 2)) {
+				constexpr uint8_t indexSize = 2;
+				char classIndexBuf[indexSize];
+				char nameAndTypeIndexBuf[indexSize];
+				if (!tryRead(in, classIndexBuf, indexSize) || !tryRead(in, nameAndTypeIndexBuf, indexSize)) {
 					valid = false;
 					return {};
 				}
 
-				Index classIndex = bytesToType<Index, 2>(classIndexBuf);
-				Index nameAndTypeIndex = bytesToType<Index, 2>(nameAndTypeIndexBuf);
+				Index classIndex = bytesToType<Index, indexSize>(classIndexBuf);
+				Index nameAndTypeIndex = bytesToType<Index, indexSize>(nameAndTypeIndexBuf);
 				return {ReferenceInfo{static_cast<Tag>(tag), classIndex, nameAndTypeIndex}};
 				break;
 			}
 		case CONSTANT_String:
 			{
-				char buf[2];
-				if (!tryRead(in, buf, 2)) {
+				constexpr uint8_t indexSize = 2;
+				char buf[indexSize];
+				if (!tryRead(in, buf, indexSize)) {
 					valid = false;
 					return {};
 				}
 
-				Index stringIndex = bytesToType<Index, 2>(buf);
+				Index stringIndex = bytesToType<Index, indexSize>(buf);
 				return {StringInfo{stringIndex}};
 				break;
 			}
 		case CONSTANT_Integer:
 			{
-				char buf[4];
-				if (!tryRead(in, buf, 4)) {
+				constexpr uint8_t intSize = 4;	
+				char buf[intSize];
+				if (!tryRead(in, buf, intSize)) {
 					valid = false;
 					return {};
 				}
 
-				uint32_t data = bytesToType<uint32_t, 4>(buf);
+				uint32_t data = bytesToType<uint32_t, intSize>(buf);
 				return {data};
 				break;
 			}
 		case CONSTANT_Float:
 			{
-				char buf[4];
-				if (!tryRead(in, buf, 4)) {
+				constexpr uint8_t floatSize = 4;
+				char buf[floatSize];
+				if (!tryRead(in, buf, floatSize)) {
 					valid = false;
 					return {};
 				}
 
-				float data = bytesToType<float, 4>(buf);
+				float data = bytesToType<float, floatSize>(buf);
 				return {data};
 				break;
 			}
 		case CONSTANT_Long:
 			{
-				char buf[8];
+				constexpr uint8_t longSize = 8;
+				char buf[longSize];
 
-				if (!tryRead(in, buf, 8)) {
+				if (!tryRead(in, buf, longSize)) {
 					valid = false;
 					return {};
 				}
 				
-				uint64_t data = bytesToType<uint64_t, 8>(buf);
+				uint64_t data = bytesToType<uint64_t, longSize>(buf);
 				return {data};
 				break;
 			}
 		case CONSTANT_Double:
 			{
-				char buf[8];
+				constexpr uint8_t doubleSize = 8;
+				char buf[doubleSize];
 
-				if (!tryRead(in, buf, 8)) {
+				if (!tryRead(in, buf, doubleSize)) {
 					valid = false;
 					return {};
 				}
 
-				double data = bytesToType<double, 8>(buf);
+				double data = bytesToType<double, doubleSize>(buf);
 			   	return {data};	
 				break;
 			}
@@ -124,13 +132,14 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 			}
 		case CONSTANT_Utf8:
 			{
-				char lenBuf[2];
-				if (!tryRead(in, lenBuf, 2)) {
+				constexpr uint8_t lengthSize = 2;
+				char lenBuf[lengthSize];
+				if (!tryRead(in, lenBuf, lengthSize)) {
 					valid = false;
 					return {};
 				}
 
-				uint16_t len = bytesToType<uint16_t, 2>(lenBuf);
+				uint16_t len = bytesToType<uint16_t, lengthSize>(lenBuf);
 
 				char strBuf[len];
 				if (!tryRead(in, strBuf, len)) {
