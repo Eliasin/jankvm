@@ -38,7 +38,30 @@ namespace ConstantPool {
 		Index stringIndex;
 	};
 
-	using Entry = std::variant<uint32_t, uint64_t, float, double, std::string, ClassInfo, ReferenceInfo, StringInfo>;
+	struct NameAndTypeInfo {
+		Index nameIndex;
+		Index descIndex;
+	};
+
+	using ReferenceKind = uint8_t;
+
+	struct MethodHandleInfo {
+		ReferenceKind refKind;
+		Index refIndex;
+	};
+
+	struct MethodTypeInfo {
+		Index descIndex;
+	};
+
+	struct InvokeDynamicInfo {
+		Index bootstrapMethodAttrIndex;
+		Index nameAndTypeIndex;
+	};
+
+	using Entry = std::variant<uint32_t, uint64_t, float, double, std::string, ClassInfo,
+		 					   ReferenceInfo, StringInfo, NameAndTypeInfo, MethodHandleInfo, 
+							   MethodTypeInfo, InvokeDynamicInfo>;
 
 	using Pool = std::vector<Entry>;
 }

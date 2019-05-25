@@ -42,6 +42,7 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 				return {ClassInfo{index}};
 				break;
 			}
+		//Intentional case fallthrough since these cases are all handled similarly
 		case CONSTANT_Fieldref:
 		case CONSTANT_Methodref:
 		case CONSTANT_InterfaceMethodref:
@@ -128,6 +129,18 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 			}
 		case CONSTANT_NameAndType:
 			{
+				constexpr uint8_t indexSize = 2;
+				char nameIndexBuf[indexSize];
+				char descIndexBuf[indexSize];
+
+				if (!tryRead(in, nameIndexBuf, indexSize) || !tryRead(in, descIndexBuf, indexSize)) {
+					valid = false;
+					return {};
+				}
+
+				Index nameIndex = bytesToType<Index, indexSize>(nameIndexBuf);
+				Index descIndex = bytesToType<Index, indexSize>(descIndexBuf);
+				return {NameAndTypeInfo{nameIndex, descIndex}};
 				break;
 			}
 		case CONSTANT_Utf8:
@@ -151,11 +164,55 @@ ConstantPool::Entry ConstantPoolParser::parseEntry(std::istream& in) {
 				break;
 			}
 		case CONSTANT_MethodHandle:
-			break;
+			{
+				constexpr uint8_t refKindSize = 1;
+				constexpr uint8_t indexSize = 2;
+				char refKindBuf[refKindSize];
+				char refIndexBuf[indexSize];
+
+				if (!tryRead(in, refKindBuf, refKindSize) || !tryRead(in, refIndexBuf, indexSize)) {
+					valid = false;
+					return {};
+				}
+
+				ReferenceKind refKind = bytesToType<ReferenceKind, refKindSize>(refKindBuf);
+				if (refKind < 1 || refKind > 9) {
+					valid = false;
+					return {};
+				}
+				Index refIndex = bytesToType<Index, indexSize>(refIndexBuf);
+				return {MethodHandleInfo{refKind, refIndex}};
+				break;
+			}
 		case CONSTANT_MethodType:
-			break;
+			{
+				constexpr uint8_t indexSize = 2;
+				char descIndexBuf[indexSize];
+
+				if (!tryRead(in, descIndexBuf, indexSize)) {
+					valid = false;
+					return {};
+				}
+				Index descIndex = bytesToType<Index, indexSize>(descIndexBuf);
+				return {MethodTypeInfo{descIndex}};
+				break;	
+			}
 		case CONSTANT_InvokeDynamic:
-			break;
+			{
+				constexpr uint8_t indexSize = 2;
+				char bootstrapMethodAttrIndexBuf[indexSize];
+				char nameAndTypeIndexBuf[indexSize];
+
+				if (!tryRead(in, bootstrapMethodAttrIndexBuf, indexSize) || !tryRead(in, nameAndTypeIndexBuf, indexSize)) {
+					valid = false;
+					return {};
+				}
+
+				Index bootstrapMethodAttrIndex = bytesToType<Index, indexSize>(bootstrapMethodAttrIndexBuf);
+				Index nameAndTypeIndex = bytesToType<Index, indexSize>(nameAndTypeIndexBuf);
+				return {InvokeDynamicInfo{bootstrapMethodAttrIndex, nameAndTypeIndex}};
+				break;
+			}
 		default:
 			valid = false;
 			std::cerr << "Error: Unkown/Invalid constant pool entry tag" << std::endl;
