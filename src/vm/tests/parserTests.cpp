@@ -16,4 +16,6 @@ TEST_CASE("constant pool parsing", "[constant pool]") {
 	REQUIRE(std::get<int32_t>(constantPool->at(0)) == 2);
 	REQUIRE(std::get<float>(constantPool->at(1)) - 16.f < 0.001);
 	REQUIRE(std::get<int64_t>(constantPool->at(2)) == 42949672970);	
+	//Skipping one index since all 8 byte constant pool entries take up two spaces
+	REQUIRE(std::get<double>(constantPool->at(4)) - 32.0 < 0.001);
 }
