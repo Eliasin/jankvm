@@ -20,4 +20,5 @@ TEST_CASE("constant pool parsing", "[constant pool]") {
 	REQUIRE(std::get<double>(constantPool->at(4)) - 32.0 < 0.001);
 	//Once again skipping an index
 	REQUIRE(std::get<std::string>(constantPool->at(6)) == "Hello!");
+	REQUIRE(std::get<ConstantPool::StringInfo>(constantPool->at(7)).stringIndex == 7);
 }
